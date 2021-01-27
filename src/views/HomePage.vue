@@ -21,7 +21,6 @@
 </template>
 
 <script>
-import io from 'socket.io-client'
 export default {
   data(){
     return{
@@ -41,8 +40,8 @@ export default {
     }
   },
   created(){
-    console.log(io)
-    const socket = io('http://localhost:3000')
+    console.log(this.$io)
+    const socket = this.$io('http://localhost:3000')
     socket.on('welcome',(data)=>{
       console.log(data);
     })

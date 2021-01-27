@@ -11,11 +11,13 @@ const io = socketio(expServer,{
     origin: '*'
   }
 })
-io.on('connect',(socket)=>{
+io.on('connection',(socket)=>{
   console.log(`${socket.id} connected`);
+  socket.join('class101')
   socket.emit('welcome','Welcome to socket server')
-  socket.on('vid',(data)=>{
+  console.log(socket.rooms);
+  socket.on('draw',(data)=>{
     console.log(data);
-    socket.emit('remvid',data)
+    socket.broadcast.emit('follow',data)
   })
 })

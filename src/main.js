@@ -2,6 +2,8 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import io from 'socket.io-client'
+Object.defineProperty(Vue.prototype, '$io', { value: io });
 
 Vue.config.productionTip = false
 

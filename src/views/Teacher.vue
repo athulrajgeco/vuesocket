@@ -4,7 +4,9 @@
       <label for="clr" :style='textColor'>Pen Color </label>
       <input type="color" name="clr" v-model="colour" id="clr">
       <label for="pen">Pen Width</label>
-      <input type="range" name="pen" value="">
+      <p style="width:40px; text-align:right;">{{penWidth}} px</p>
+      <input type="range" name="pen" v-model="penWidth" min="1" max="15">
+      <button type="button" name="button" @click='clear'>Clear</button>
     </div>
     <canvas ref='canvas' width="1000" height="600" v-on:mousedown="begin" v-on:mouseup="end"  v-on:mousemove="draw"></canvas>
   </div>
@@ -16,18 +18,13 @@ export default {
     this.socket = this.$io('http://localhost:3000')
     this.socket.on('welcome',(data)=>{
       console.log(data);
-      this.socket.emit('vid',{
-        prvX:this.prvX,
-        prvY:this.prvY,
-        curX:this.curX,
-        curY:this.curY,
-       })
+      console.log(this.$refs.canvas);
       this.ctx = this.$refs.canvas.getContext('2d')
-      this.ctx.lineWidth = 4
       this.ctx.lineJoin = 'round'
       this.ctx.lineCap = 'round'
       this.canOffL = this.$refs.canvas.offsetLeft
       this.canOffT = this.$refs.canvas.offsetTop
+      console.log(this.canOffL,this.canOffT);
     })
   },
   data(){
@@ -42,7 +39,9 @@ export default {
       ctx: null,
       socket: null,
       colour: '#0000FF',
-      textColor: 'color: #0000FF;'
+      textColor: 'color: #0000FF;',
+      penWidth: 4,
+      textWidth: 'font-size:4px;'
     }
   },
   watch:{
@@ -64,6 +63,7 @@ export default {
       this.curX = evt.clientX - this.canOffL
       this.curY = evt.clientY - this.canOffT
       this.ctx.strokeStyle = this.colour
+      this.ctx.lineWidth = this.penWidth
       if (this.isDraw) {
         this.ctx.beginPath()
         this.ctx.moveTo(this.prvX,this.prvY)
@@ -74,18 +74,32 @@ export default {
           prvY:this.prvY,
           curX:this.curX,
           curY:this.curY,
-          color:this.colour
+          color:this.colour,
+          size:this.penWidth
          })
       }
+    },
+    clear(){
+      this.ctx.clearRect(0,0,1000,600)
+      this.socket.emit('clear',{
+        clear:true
+      })
     }
+    // scroll(){
+    //   let evt = window.event;
+    //   console.log('scrolled');
+    //   console.log(evt);
+    // }
   }
 }
 </script>
 
 <style lang="css" scoped>
 canvas{
-  border: 1px solid grey;
-  background-color: beige;
+  border: 2px solid black;
+  border-radius: 8px;
+  background-color: #20b2aa;
+  box-sizing: border-box;
 }
 label{
   font-size: 20px;
@@ -103,11 +117,18 @@ label{
   border: 3px solid indianred;
   border-radius: 5px;
   height: 50px;
-  width: 1000px;
+  width: 800px;
   background-color: peachpuff;
   box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+p{
+  margin-right: 3px;
+  font-size: 14px;
+}
+button{
+  margin: 5px;
 }
 </style>

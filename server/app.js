@@ -18,4 +18,7 @@ io.on('connection',(socket)=>{
   socket.on('draw',(data)=>{
     socket.broadcast.emit('follow',data)
   })
+  socket.on('clear',(data)=>{
+    socket.broadcast.emit('follow',data)
+  })
 })

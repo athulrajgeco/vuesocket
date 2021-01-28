@@ -16,7 +16,6 @@ export default {
     socket.on('welcome',(data)=>{
       console.log(data);
       this.ctx = this.$refs.stcanvas.getContext('2d')
-      this.ctx.strokeStyle = 'blue'
       this.ctx.lineWidth = 4
       this.ctx.lineJoin = 'round'
       this.ctx.lineCap = 'round'
@@ -24,6 +23,7 @@ export default {
     })
     //console.log(this.$refs);
     socket.on('follow',(data)=>{
+      this.ctx.strokeStyle = data.color
       this.ctx.beginPath();
       this.ctx.moveTo(data.prvX, data.prvY);
       this.ctx.lineTo(data.curX, data.curY);

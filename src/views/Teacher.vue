@@ -1,5 +1,11 @@
 <template lang="html">
   <div class="">
+    <div id="controls">
+      <label for="clr" :style='textColor'>Pen Color </label>
+      <input type="color" name="clr" v-model="colour" id="clr">
+      <label for="pen">Pen Width</label>
+      <input type="range" name="pen" value="">
+    </div>
     <canvas ref='canvas' width="1000" height="600" v-on:mousedown="begin" v-on:mouseup="end"  v-on:mousemove="draw"></canvas>
   </div>
 </template>
@@ -17,7 +23,6 @@ export default {
         curY:this.curY,
        })
       this.ctx = this.$refs.canvas.getContext('2d')
-      this.ctx.strokeStyle = 'blue'
       this.ctx.lineWidth = 4
       this.ctx.lineJoin = 'round'
       this.ctx.lineCap = 'round'
@@ -35,7 +40,14 @@ export default {
       canOffL: 0,
       canOffT: 0,
       ctx: null,
-      socket: null
+      socket: null,
+      colour: '#0000FF',
+      textColor: 'color: #0000FF;'
+    }
+  },
+  watch:{
+    colour: function(){
+      this.textColor = `color: ${this.colour};`
     }
   },
   methods:{
@@ -51,6 +63,7 @@ export default {
       this.prvY = this.curY
       this.curX = evt.clientX - this.canOffL
       this.curY = evt.clientY - this.canOffT
+      this.ctx.strokeStyle = this.colour
       if (this.isDraw) {
         this.ctx.beginPath()
         this.ctx.moveTo(this.prvX,this.prvY)
@@ -61,6 +74,7 @@ export default {
           prvY:this.prvY,
           curX:this.curX,
           curY:this.curY,
+          color:this.colour
          })
       }
     }
@@ -72,5 +86,28 @@ export default {
 canvas{
   border: 1px solid grey;
   background-color: beige;
+}
+label{
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 10px;
+  text-shadow: 0px 0px 5px white;
+}
+#clr{
+  display: none;
+}
+#controls{
+  margin: auto;
+  margin-bottom: 5px;
+  padding: 5px;
+  border: 3px solid indianred;
+  border-radius: 5px;
+  height: 50px;
+  width: 1000px;
+  background-color: peachpuff;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

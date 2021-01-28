@@ -15,9 +15,7 @@ io.on('connection',(socket)=>{
   console.log(`${socket.id} connected`);
   socket.join('class101')
   socket.emit('welcome','Welcome to socket server')
-  console.log(socket.rooms);
   socket.on('draw',(data)=>{
-    console.log(data);
     socket.broadcast.emit('follow',data)
   })
 })

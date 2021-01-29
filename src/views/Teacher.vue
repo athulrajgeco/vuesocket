@@ -22,9 +22,6 @@ export default {
       this.ctx = this.$refs.canvas.getContext('2d')
       this.ctx.lineJoin = 'round'
       this.ctx.lineCap = 'round'
-      this.canOffL = this.$refs.canvas.offsetLeft
-      this.canOffT = this.$refs.canvas.offsetTop
-      console.log(this.canOffL,this.canOffT);
     })
   },
   data(){
@@ -34,8 +31,6 @@ export default {
       curX: 0,
       curY: 0,
       isDraw: false,
-      canOffL: 0,
-      canOffT: 0,
       ctx: null,
       socket: null,
       colour: '#0000FF',
@@ -60,8 +55,8 @@ export default {
       let evt = window.event;
       this.prvX = this.curX
       this.prvY = this.curY
-      this.curX = evt.clientX - this.canOffL
-      this.curY = evt.clientY - this.canOffT
+      this.curX = evt.clientX - this.$refs.canvas.offsetLeft
+      this.curY = evt.clientY - this.$refs.canvas.offsetTop
       this.ctx.strokeStyle = this.colour
       this.ctx.lineWidth = this.penWidth
       if (this.isDraw) {
@@ -76,7 +71,7 @@ export default {
           curY:this.curY,
           color:this.colour,
           size:this.penWidth
-         })
+        })
       }
     },
     clear(){

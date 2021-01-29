@@ -52,6 +52,7 @@ export default {
       console.log(stream);
       this.$refs.localVideo.srcObject = this.localStream
       console.log('stream obtained');
+      console.log(this.$refs.localVideo);
       // socket.emit('vid',{
       //   name: 'stream',
       //   id: 25874

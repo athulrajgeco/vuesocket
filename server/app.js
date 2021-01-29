@@ -21,4 +21,8 @@ io.on('connection',(socket)=>{
   socket.on('clear',(data)=>{
     socket.broadcast.emit('follow',data)
   })
+  socket.on('vid',(data)=>{
+    //socket.broadcast.emit('follow',data)
+    console.log(data);
+  })
 })

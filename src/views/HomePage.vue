@@ -40,24 +40,27 @@ export default {
     }
   },
   created(){
-    console.log(this.$io)
     const socket = this.$io('http://localhost:3000')
     socket.on('welcome',(data)=>{
       console.log(data);
     })
-    console.log(navigator.mediaDevices); //navigator.getMediaDevices
     navigator.mediaDevices.getUserMedia(this.mediaConstraints)
     .then(stream =>{
       this.localStream = stream
-      console.log(stream);
+      let track = stream.getVideoTracks();
       this.$refs.localVideo.srcObject = this.localStream
-      console.log('stream obtained');
-      console.log(this.$refs.localVideo);
+      let config = {
+        iceServers:[{
+          urls:'stun:stun.services.mozilla.com:3478'
+        }]
+      }
+      let peer = new RTCPeerConnection(config)
+      //console.log('stream obtained');
       // socket.emit('vid',{
       //   name: 'stream',
       //   id: 25874
       // })
-      socket.emit('vid',this.localStream)
+      socket.emit('vid',track[0])
     })
     .catch(err =>{
       console.log(err);

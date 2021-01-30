@@ -25,4 +25,13 @@ io.on('connection',(socket)=>{
     //socket.broadcast.emit('follow',data)
     console.log(data);
   })
+  socket.on('candidate',cd =>{
+    socket.broadcast.emit('candidate',cd)
+  })
+  socket.on('offer',cd =>{
+    socket.broadcast.emit('offer',cd.sdp)
+  })
+  socket.on('answer',cd =>{
+    socket.broadcast.emit('answer',cd.sdp)
+  })
 })

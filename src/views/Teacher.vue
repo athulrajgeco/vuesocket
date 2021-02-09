@@ -19,6 +19,8 @@ export default {
     this.socket.on('welcome',(data)=>{
       console.log(data);
       console.log(this.$refs.canvas);
+      this.$refs.canvas.width = window.innerWidth
+      this.$refs.canvas.height = window.innerHeight
       this.ctx = this.$refs.canvas.getContext('2d')
       this.ctx.lineJoin = 'round'
       this.ctx.lineCap = 'round'
@@ -80,7 +82,7 @@ export default {
         clear:true
       })
     }
-    // scroll(){
+    // resize(){
     //   let evt = window.event;
     //   console.log('scrolled');
     //   console.log(evt);

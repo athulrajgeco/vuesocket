@@ -15,28 +15,30 @@ export default {
     }
   },
   created(){
-    const socket = this.$io('http://localhost:3000')
-    socket.on('welcome',(data)=>{
-      console.log(data);
-      this.$refs.stcanvas.width = window.innerWidth - 35
-      this.$refs.stcanvas.height = window.innerHeight
-      this.ctx = this.$refs.stcanvas.getContext('2d')
-      this.ctx.lineJoin = 'round'
-      this.ctx.lineCap = 'round'
+    const socket = this.$io(this.$server)
+    socket.on('connect',(data) =>{
+      socket.on('welcome',(data)=>{
+        console.log(data);
+        this.$refs.stcanvas.width = window.innerWidth - 35
+        this.$refs.stcanvas.height = window.innerHeight
+        this.ctx = this.$refs.stcanvas.getContext('2d')
+        this.ctx.lineJoin = 'round'
+        this.ctx.lineCap = 'round'
 
-    })
-    socket.on('follow',(data)=>{
-      if(data.clear){
-        this.ctx.clearRect(0,0,1000,600)
-      }
-      else{
-        this.ctx.strokeStyle = data.color
-        this.ctx.lineWidth = data.size
-        this.ctx.beginPath();
-        this.ctx.moveTo(data.prvX, data.prvY);
-        this.ctx.lineTo(data.curX, data.curY);
-        this.ctx.stroke()
-      }
+      })
+      socket.on('follow',(data)=>{
+        if(data.clear){
+          this.ctx.clearRect(0,0,1000,600)
+        }
+        else{
+          this.ctx.strokeStyle = data.color
+          this.ctx.lineWidth = data.size
+          this.ctx.beginPath();
+          this.ctx.moveTo(data.prvX, data.prvY);
+          this.ctx.lineTo(data.curX, data.curY);
+          this.ctx.stroke()
+        }
+      })
     })
   },
   methods:{

@@ -15,15 +15,17 @@
 <script>
 export default {
   created(){
-    this.socket = this.$io('http://localhost:3000')
-    this.socket.on('welcome',(data)=>{
-      console.log(data);
-      console.log(this.$refs.canvas);
-      this.$refs.canvas.width = window.innerWidth
-      this.$refs.canvas.height = window.innerHeight
-      this.ctx = this.$refs.canvas.getContext('2d')
-      this.ctx.lineJoin = 'round'
-      this.ctx.lineCap = 'round'
+    this.socket = this.$io(this.$server)
+    this.socket.on('connect',(data) =>{
+      this.socket.on('welcome',(data)=>{
+        console.log(data);
+        console.log(this.$refs.canvas);
+        this.$refs.canvas.width = window.innerWidth
+        this.$refs.canvas.height = window.innerHeight
+        this.ctx = this.$refs.canvas.getContext('2d')
+        this.ctx.lineJoin = 'round'
+        this.ctx.lineCap = 'round'
+      })
     })
   },
   data(){
@@ -57,8 +59,8 @@ export default {
       let evt = window.event;
       this.prvX = this.curX
       this.prvY = this.curY
-      this.curX = evt.clientX - this.$refs.canvas.offsetLeft
-      this.curY = evt.clientY - this.$refs.canvas.offsetTop
+      this.curX = evt.clientX - this.$refs.canvas.offsetLeft + window.scrollX
+      this.curY = evt.clientY - this.$refs.canvas.offsetTop + window.scrollY
       this.ctx.strokeStyle = this.colour
       this.ctx.lineWidth = this.penWidth
       if (this.isDraw) {

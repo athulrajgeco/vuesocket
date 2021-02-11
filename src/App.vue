@@ -2,7 +2,6 @@
   <div id="app">
     <div id="nav">
       <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link> |
       <router-link to="/stWb">Student</router-link> |
       <router-link to="/wb">Whiteboard</router-link>
     </div>
@@ -16,7 +15,7 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  color: #2c3e20;
 }
 
 #nav {
@@ -25,7 +24,7 @@
 
 #nav a {
   font-weight: bold;
-  color: #2c3e50;
+  color: #2c3e20;
 }
 
 #nav a.router-link-exact-active {

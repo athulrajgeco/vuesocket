@@ -6,6 +6,8 @@ router.use(cors())
 router.use(express.urlencoded({extended: false}))
 router.use(express.json())
 
+const classes = ['101', '303', '507']
+
 router.post('/login',(req, res)=>{
   console.log(req.body);
   let route = 'student'

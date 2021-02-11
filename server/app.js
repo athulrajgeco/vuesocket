@@ -24,10 +24,10 @@ io.on('connection',(socket)=>{
   socket.on('clear',(data)=>{
     socket.broadcast.emit('follow',data)
   })
-  // socket.on('vid',(data)=>{
-  //   socket.broadcast.emit('follow',data)
-  //   console.log(data);
-  // })
+  socket.on('wbsettings',(data)=>{
+    socket.broadcast.emit('wbsettings',data)
+    console.log(data);
+  })
 })
 
 app.use('/user',users)

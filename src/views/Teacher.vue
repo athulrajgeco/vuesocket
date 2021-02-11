@@ -16,15 +16,19 @@
 export default {
   created(){
     this.socket = this.$io(this.$server)
-    this.socket.on('connect',(data) =>{
-      this.socket.on('welcome',(data)=>{
-        console.log(data);
-        console.log(this.$refs.canvas);
-        this.$refs.canvas.width = window.innerWidth
-        this.$refs.canvas.height = window.innerHeight
-        this.ctx = this.$refs.canvas.getContext('2d')
-        this.ctx.lineJoin = 'round'
-        this.ctx.lineCap = 'round'
+    this.socket.on('welcome',(data)=>{
+      console.log(data);
+      console.log(this.$refs.canvas);
+      this.$refs.canvas.width = window.innerWidth -30
+      this.$refs.canvas.height = window.innerHeight
+      this.ctx = this.$refs.canvas.getContext('2d')
+      this.ctx.lineJoin = 'round'
+      this.ctx.lineCap = 'round'
+      this.socket.emit('wbsettings',{
+        class: 'class101',
+        cwidth: this.$refs.canvas.width,
+        cheight: this.$refs.canvas.height,
+        password: ''
       })
     })
   },
@@ -79,7 +83,7 @@ export default {
       }
     },
     clear(){
-      this.ctx.clearRect(0,0,1000,600)
+      this.ctx.clearRect(0,0,this.$refs.canvas.width,this.$refs.canvas.height)
       this.socket.emit('clear',{
         clear:true
       })

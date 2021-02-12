@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="">
-    <div class="login">
+    <div class="login" v-if="user == ''">
       <h2>Please login to continue</h2>
       <form class="" method="post">
         <div class="gridcontainer">
@@ -17,6 +17,24 @@
       </form>
       <br>
     </div>
+    <div class="" v-if="user == 'student'">
+      <h1>Ongoing classes</h1>
+      <div class="gridcontainer">
+        <div class="classroom">
+          <h3>Subject</h3>
+          <p></p>
+          <h3>Faculty</h3>
+          <p></p>
+          <h3>Start Time</h3>
+          <p></p>
+          <button type="button" name="button">Join</button>
+        </div>
+      </div>
+      <h1>Starting Soon...</h1>
+    </div>
+    <!-- <div class="" v-else>
+      <button type="button" name="button"></button>
+    </div> -->
   </div>
 </template>
 
@@ -26,7 +44,8 @@ export default {
   data(){
     return{
       username:'',
-      password:''
+      password:'',
+      user: ''
     }
   },
   methods: {
@@ -39,10 +58,15 @@ export default {
       }
       axios.post(address, data)
       .then(data =>{
-        if(data.data == 'faculty')
-          this.$router.push('/wb')
-        else
-          this.$router.push('/stwb')
+        if(data.data == 'faculty'){
+          confirm("Maximize your window to get maximum whiteboard width")
+          //this.$router.push('/wb')
+          this.user = 'faculty'
+        }
+        else{
+          // this.$router.push('/stwb')
+          this.user = 'student'
+        }
         console.log(data);
       })
       .catch(err =>{

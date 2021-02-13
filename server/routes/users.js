@@ -5,7 +5,7 @@ let classList = [
   {
     sub: 'Programming',
     fac: 'Prof. Athul Raj',
-    start: '1613149859623'
+    start: '2613149859623'
   },
   {
     sub: 'Signals',
@@ -26,18 +26,8 @@ router.use(express.json())
 
 const classes = ['101', '303', '507']
 
-router.post('/login',(req, res)=>{
-  console.log(req.body);
-  let data = {
-    user: 'student'
-  }
-  if(req.body.username.search('TR')==0){
-    data.user = 'faculty'
-  }
-  else{
-    data.class = classList
-  }
-  res.send(data)
+router.get('/student',(req, res)=>{
+  res.send(classList)
 })
 
 module.exports = router

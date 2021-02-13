@@ -10,6 +10,18 @@
 </template>
 
 <style>
+@font-face {
+  font-family: "Ostrich";
+  src: url(./assets/fonts/Ostrich.ttf) format("truetype");
+}
+@font-face {
+  font-family: "Jellee";
+  src: url(./assets/fonts/Jellee.woff) format("woff");
+}
+@font-face {
+  font-family: "Hussar";
+  src: url(./assets/fonts/Hussar3d.otf) format("opentype");
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

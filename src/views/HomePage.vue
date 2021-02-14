@@ -1,8 +1,5 @@
 <template lang="html">
   <div class="">
-    <div class="">
-      <h1 id="name">Litmus Class Room</h1>
-    </div>
     <div class="login" v-if="user == ''">
       <h2>Please choose your role</h2>
       <div class="gridcontainer">
@@ -15,7 +12,7 @@
       </div>
       <br>
     </div>
-    <div class="" v-if="user == 'student'">
+    <div class="" v-if="user == 'Student'">
       <h1>Ongoing classes</h1>
       <div class="flexcontainer">
         <div v-for='c of ongoingClass' class="notice">
@@ -42,20 +39,8 @@
     </div>
     <div class="modal" v-if="modal" @click='modal = false'>
       <div class="loginform">
-        <h3>Faculty login</h3>
-        <form class="" method="post">
-          <div class="gridcontainer">
-            <label class="griditem1" style="grid-row: 1;" for="uname">Username</label>
-            <input class="griditem2" style="grid-row: 1;" type="text" name="uname" v-model="username">
-          </div>
-          <br>
-          <div class="gridcontainer">
-            <label class="griditem1" style="grid-row: 2;" for="pwd">Password</label>
-            <input class="griditem2" style="grid-row: 2;" type="password" name="pwd" v-model="password">
-          </div>
-          <br>
-          <input type="submit" @click.prevent='login' value="Login">
-        </form>
+        <h3>{{user}} login</h3>
+        <login-form :type='user'></login-form>
       </div>
     </div>
   </div>
@@ -63,6 +48,7 @@
 
 <script>
 import axios from 'axios'
+import LoginForm from '../components/LoginForm.vue'
 export default {
   data(){
     return{
@@ -74,13 +60,16 @@ export default {
       modal: false
     }
   },
+  components:{
+    'login-form': LoginForm
+  },
   methods: {
     clList(){
       let address = this.$server + `user/student`
       axios.get(address)
       .then(data =>{
         let classList = []
-        this.user = 'student'
+        this.user = 'Student'
         classList = data.data
         classList.forEach((item, i) => {
           if (item.start < Date.now()) {
@@ -95,12 +84,8 @@ export default {
         console.log(err);
       })
     },
-    login(){
-      this.modal = false
-      if(confirm("Maximize your browser window for maximum board width"))
-        this.$router.push('/fdb')
-    },
     facdb(){
+      this.user = 'Faculty'
       this.modal = true
     },
     joinClass(k){
@@ -115,14 +100,6 @@ export default {
     margin-right: 12px;
     text-align: right;
     align-self: center;
-  }
-  #name{
-     text-align: center;
-     font-family:'Jellee','Ostrich';
-     font-size: 45px;
-     background: linear-gradient(to right, red 25%, blue 75%);
-     background-clip: text;
-     color:transparent;
   }
   .gridcontainer{
     display: grid;
@@ -154,12 +131,6 @@ export default {
     cursor: pointer;
     background-color: seagreen;
     font-weight: 800;
-  }
-  .griditem1{
-    grid-column: 4 /6;
-  }
-  .griditem2{
-    grid-column: 6 /10;
   }
   .modal{
     height: 100%;

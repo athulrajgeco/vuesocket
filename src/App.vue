@@ -5,6 +5,7 @@
       <router-link to="/stWb">Student</router-link> |
       <router-link to="/wb">Whiteboard</router-link>
     </div> -->
+    <h1 id="name">Litmus Class Room</h1>
     <router-view/>
   </div>
 </template>
@@ -41,5 +42,16 @@
 
 #nav a.router-link-exact-active {
   color: #42b983;
+}
+
+#name{
+   text-align: center;
+   font-family:'Jellee','Ostrich';
+   font-size: 45px;
+   background: linear-gradient(to right, red 25%, blue 75%);
+   background-clip: text;
+   color:transparent;
+   margin-top: 8px;
+   margin-bottom: 8px;
 }
 </style>

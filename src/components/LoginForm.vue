@@ -30,6 +30,8 @@ export default {
           this.$router.push('/fdb')
       } else if (this.type =='Student'){
         this.$router.push('/stwb')
+      } else if (this.type =='admin'){
+        this.$store.commit('changeAuth','admin')
       }
     }
   },

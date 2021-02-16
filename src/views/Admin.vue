@@ -7,17 +7,22 @@
     <div class="" v-else>
       <!-- <h1 @click="$store.commit('changeAuth','admin')">hello</h1> -->
       <hr>
-      <div class="sidebar">
-        <p @click='expand("a")'>Analytics</p>
-        <div class="subtopic" v-if="isExpand.a == true">
-          <p>Classes Today</p>
-          <p>Classes this Month</p>
-          <p>Classes this Year</p>
+      <div class="gridcontainer">
+        <div class="sidebar">
+          <p @click='expand("a")'>Analytics</p>
+          <div class="subtopic" v-if="isExpand.a == true">
+            <p>Classes Today</p>
+            <p @click='monthly()'>Classes this Month</p>
+            <p>Classes this Year</p>
+          </div>
+          <p @click='expand("b")'>Users</p>
+          <div class="subtopic" v-if="isExpand.b == true">
+            <p>Add New User</p>
+            <p>Delete User</p>
+          </div>
         </div>
-        <p @click='expand("b")'>Users</p>
-        <div class="subtopic" v-if="isExpand.b == true">
-          <p>Add New User</p>
-          <p>Delete User</p>
+        <div class="dashboard">
+          <calendar title="February" type='m'> </calendar>
         </div>
       </div>
     </div>
@@ -26,9 +31,11 @@
 
 <script>
 import LoginForm from '../components/LoginForm.vue'
+import Calendar from '../components/Calendar.vue'
 export default {
   components:{
-    'login-form': LoginForm
+    'login-form': LoginForm,
+    'calendar': Calendar
   },
   data(){
     return{
@@ -41,7 +48,9 @@ export default {
         this.isExpand[k] = false
       }
       this.isExpand[n] = true
-      console.log(this.isExpand);
+    },
+    monthly(){
+      let curMonth = new Date()
     }
   }
 }
@@ -58,10 +67,15 @@ export default {
   padding: 25px;
   box-sizing: border-box;
 }
+.gridcontainer{
+  display: grid;
+  grid-template-areas: "a b"
+                       "a b";
+  grid-template-rows: 1fr 1fr;
+  grid-template-columns: 250px 1fr;
+}
 .sidebar{
-  width: 250px;
-  position: fixed;
-  left: 0;
+  grid-area: a;
   border-right: 4px solid lightgrey;
   height: 100%;
   margin-left: 10px;
@@ -80,6 +94,14 @@ export default {
 }
 .sidebar >p:nth-child(even){
   background-color: dodgerblue;
+}
+.dashboard{
+  /* position: relative;
+  grid-column: 2 /5;
+  grid-row: 1; */
+  margin: auto;
+  /* width: calc(100% - 250px); */
+  grid-area: b;
 }
 .subtopic{
   background-color: white;

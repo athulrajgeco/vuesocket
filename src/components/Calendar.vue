@@ -1,41 +1,65 @@
 <template lang="html">
-  <div class="outer">
-    <h1>{{title.toUpperCase()}}</h1>
-    <div class="inner">
-      <div class="square daynames" v-for='d in 7' v-if="type == 'm'">
-        {{weekdays[d-1]}}
+  <div class="">
+    <div class="outer">
+      <h1>{{title.toUpperCase()}}</h1>
+      <div class="inner">
+        <div class="square daynames" v-for='d in 7' v-if="type == 'm'">
+          {{weekdays[d-1]}}
+        </div>
+        <div class="" v-for='c in cols'>
+          <!-- <div class="square" v-if="type == 'y'" v-for='r in rows'>
+            <p>{{months[c]}}</p>
+          </div> -->
+          <div class="square" v-for='r in rows' style="background-color: lightgrey;"
+            v-if='((r+c-2<start)&&(r==1))||(((r-1)*7)+c-1-start)>=days'>
+          </div>
+          <div class="square" v-else
+            @click='showdetails(r,c)' style="cursor:pointer;">
+            <p>{{date[((r-1)*7)+c-1-start]}}</p>
+          </div>
+        </div>
       </div>
-      <div class="" v-for='r in cols'>
-        <div class="square" v-for='c in 5' v-if='(r==1)&&(c<4)'>
-          {{dispDate(r,c)}}
-        </div>
-        <div class="square" style="background-color: lightgrey;" v-else>
-          {{dispDate(r,c)}}
-        </div>
+    </div>
+    <div class="modal" v-if="modal" @click='modal = false'>
+      <div class="infobox">
+        <h3>{{classes}} classes conducted</h3>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   data(){
     return{
-      rows : 1,
+      rows : 4,
       cols : 1,
       weekdays: ['Sunday','Monday','Tuesday',
       'Wednesday','Thursday','Friday',
       'Saturday'],
-      itemStyle : ''
+      months: [
+        "January", "February",
+        "March", "April", "May",
+        "June", "July", "August",
+        "September", "October",
+        "November", "December"
+      ],
+      date: [],
+      modal: false,
+      classes: 0
     }
   },
-  props:[
-    'title',
-    'type',
-    'start',
-    'days'
-  ],
+  props:{
+    title: String,
+    type: String,
+    start: Number,
+    days: Number
+  },
   created(){
+    for (let i = 1; i <= this.days; i++) {
+      this.date.push(i)
+    }
     switch (this.type) {
       case 'm':
         this.cols = 7
@@ -47,16 +71,25 @@ export default {
         this.cols = 6
         break;
     }
+    if (this.days + this.start > 35) {
+      this.rows = 6
+    } else if (this.days + this.start > 28){
+      this.rows = 5
+    }
   },
   methods: {
-    dispDate(r,c){
-      console.log(r,c);
-      if(((r==1)&&(c<4))||(r*c > 30-4)){
-        this.itemStyle = 'background-color: lightgrey;'
-        return 0;
-      } else{
-        return 'k';
-      }
+    showdetails(r,c){
+        this.modal = true
+        let address = this.$server + `report/monthly?num=${this.title}&date=${((r-1)*7)+c-1-this.start}`
+        //console.log(address);
+        axios.get(address)
+        .then(data=>{
+          //console.log(data);
+          this.classes = data.data
+        })
+        .catch(err =>{
+          console.log(err);
+        })
     }
   }
 }
@@ -82,7 +115,7 @@ export default {
   align-items: flex-end;
 }
 .square{
-  width: 100px;
+  min-width: 100px;
   height: 100px;
   flex-grow: 1;
   background-color: white;
@@ -93,14 +126,36 @@ export default {
   justify-content: space-around;
 }
 .daynames{
-  height: 30px;
+  height: 35px;
   font-weight: 600;
-  font-size: 18px;
-  color: indigo;
-  background-color: aliceblue;
+  font-size: 17px;
+  color: white;
+  background-color: cornflowerblue;
 }
-.inactive{
-  display: none;
+.modal{
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0,0,0,0.85);
+  z-index: 1;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+}
+.infobox{
+  background-color: aliceblue;
+  border: 2px solid mediumblue;
+  border-radius: 15px;
+  position: absolute;
+  top:35px;
+  min-height: 50px;
+  left: 35vw;
+  width: 30vw;
+  padding: 20px;
+}
+p{
+  font-size: 40px;
+  font-family: monospace;
+  color: black;
 }
 h1{
   margin: 5px;

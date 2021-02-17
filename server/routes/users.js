@@ -30,4 +30,5 @@ router.get('/student',(req, res)=>{
   res.send(classList)
 })
 
+
 module.exports = router

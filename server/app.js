@@ -1,6 +1,7 @@
 const express = require('express')
 const socketio = require('socket.io')
 const users = require('./routes/users')
+const report = require('./routes/report')
 
 const app = express()
 
@@ -31,3 +32,4 @@ io.on('connection',(socket)=>{
 })
 
 app.use('/user',users)
+app.use('/report',report)

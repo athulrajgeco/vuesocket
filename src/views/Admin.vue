@@ -13,7 +13,13 @@
           <div class="subtopic" v-if="isExpand.a == true">
             <p>Classes Today</p>
             <p @click='monthly()'>Classes this Month</p>
-            <p>Classes this Year</p>
+            <p>Classes by Month  </p>
+            <select class="" name="" v-if="month">
+              <option value="Jan">Jan</option>
+              <option value="Feb">Feb</option>
+              <option value="March">March</option>
+            </select>
+            <p @click='yearly()'>Classes this Year</p>
           </div>
           <p @click='expand("b")'>Users</p>
           <div class="subtopic" v-if="isExpand.b == true">
@@ -22,7 +28,9 @@
           </div>
         </div>
         <div class="dashboard">
-          <calendar title="February" type='m'> </calendar>
+          <h1>Administration Panel</h1>
+          <calendar v-if='month' :title="monthName" :type='calType' :days='monthDays' :start='monthStart' />
+          <calendar v-if='year' :title="monthName" :type='calType' :days='monthDays' :start='monthStart' />
         </div>
       </div>
     </div>
@@ -39,20 +47,65 @@ export default {
   },
   data(){
     return{
-      isExpand: {a:false, b:false}
+      isExpand: {a:false, b:false},
+      monthDays: 28,
+      monthStart: 1,
+      monthName: '',
+      calType: '',
+      month: false,
+      year: false
     }
   },
   methods: {
+    resetViews(){
+      this.month = false,
+      this.year = false
+    },
     expand(n){
       for(let k in this.isExpand){
         this.isExpand[k] = false
       }
       this.isExpand[n] = true
     },
+    mName(k){
+      const months = [
+        "January", "February",
+        "March", "April", "May",
+        "June", "July", "August",
+        "September", "October",
+        "November", "December"
+      ];
+      return(months[k])
+    },
+    mDays(k){
+      const oneDay = 24 * 60 * 60 * 1000
+      let today = new Date()
+      let start = new Date(today.getYear(),k , 1);
+      let end = new Date(today.getYear(),k+1 , 1);
+      return Math.round(Math.abs((end- start) / oneDay));
+    },
     monthly(){
+      this.resetViews()
       let curMonth = new Date()
+      this.monthName = this.mName(curMonth.getMonth())
+      this.monthStart = new Date(curMonth.getFullYear(),curMonth.getMonth(),1).getDay()
+      this.monthDays = this.mDays(curMonth.getMonth())
+      this.calType = 'm'
+      this.month = true
+    },
+    yearly(){
+      this.resetViews()
+      let curMonth = new Date()
+      this.monthName = String(curMonth.getFullYear())
+      this.monthStart = 0
+      this.monthDays = 28
+      this.calType = 'y'
+      this.year = true
     }
   }
+  // created(){
+  //   this.monthly()
+  // }
 }
 </script>
 
@@ -91,13 +144,14 @@ export default {
   margin: 0;
   cursor: pointer;
   background-color: deepskyblue;
+  grid-area: a;
 }
 .sidebar >p:nth-child(even){
   background-color: dodgerblue;
 }
 .dashboard{
-  /* position: relative;
-  grid-column: 2 /5;
+  /* position: absolute; */
+  /*grid-column: 2 /5;
   grid-row: 1; */
   margin: auto;
   /* width: calc(100% - 250px); */
@@ -114,6 +168,12 @@ export default {
 .subtopic >p:hover{
   font-weight: 800;
   cursor: pointer;
+}
+h1{
+  font-family: "Jellee";
+  font-size: 28px;
+  position: relative;
+  top: 5px;
 }
 h2{
   margin-top: 0;

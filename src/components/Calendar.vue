@@ -7,11 +7,12 @@
           {{weekdays[d-1]}}
         </div>
         <div class="" v-for='c in cols'>
-          <!-- <div class="square" v-if="type == 'y'" v-for='r in rows'>
-            <p>{{months[c]}}</p>
-          </div> -->
-          <div class="square" v-for='r in rows' style="background-color: lightgrey;"
-            v-if='((r+c-2<start)&&(r==1))||(((r-1)*7)+c-1-start)>=days'>
+          <div class="square" v-if='((r+c-2<start)&&(r==1))||(((r-1)*7)+c-1-start)>=days'
+             v-for='r in rows' style="background-color: lightgrey;">
+          </div>
+          <div class="square month" v-else-if='type == "y"'
+            @click='showdetails(r,c)' style="cursor:pointer;">
+            <p style="font-size: 35px">{{months[(r-1)*3+c-1]}}</p>
           </div>
           <div class="square" v-else
             @click='showdetails(r,c)' style="cursor:pointer;">
@@ -21,8 +22,8 @@
       </div>
     </div>
     <div class="modal" v-if="modal" @click='modal = false'>
-      <div class="infobox">
-        <h3>{{classes}} classes conducted</h3>
+      <div class="infobox" :style='invalid'>
+        <h3>{{classes}}</h3>
       </div>
     </div>
   </div>
@@ -47,7 +48,8 @@ export default {
       ],
       date: [],
       modal: false,
-      classes: 0
+      classes: '',
+      invalid: ''
     }
   },
   props:{
@@ -57,35 +59,55 @@ export default {
     days: Number
   },
   created(){
-    for (let i = 1; i <= this.days; i++) {
-      this.date.push(i)
-    }
-    switch (this.type) {
-      case 'm':
-        this.cols = 7
-        break;
-      case 'y':
-        this.cols = 3
-        break;
-      default:
-        this.cols = 6
-        break;
-    }
-    if (this.days + this.start > 35) {
-      this.rows = 6
-    } else if (this.days + this.start > 28){
-      this.rows = 5
+    this.update()
+  },
+  watch: {
+    type: function(){
+      this.update()
     }
   },
   methods: {
+    update(){
+      for (let i = 1; i <= this.days; i++) {
+        this.date.push(i)
+      }
+      switch (this.type) {
+        case 'm':
+          this.cols = 7
+          break;
+        case 'y':
+          this.cols = 3
+          this.rows = 4
+          break;
+        default:
+          this.cols = 6
+          break;
+      }
+      if (this.days + this.start > 35) {
+        this.rows = 6
+      } else if (this.days + this.start > 28){
+        this.rows = 5
+      }
+    },
     showdetails(r,c){
         this.modal = true
-        let address = this.$server + `report/monthly?num=${this.title}&date=${((r-1)*7)+c-1-this.start}`
+        let address = ''
+        if (this.type=='m') {
+          address = this.$server + `report/monthly?num=${this.title}&date=${((r-1)*7)+c-1-this.start}`
+        } else {
+          address = this.$server + `report/yearly?num=${this.title}&month=${((r-1)*3)+c-1-this.start}`
+        }
         //console.log(address);
         axios.get(address)
         .then(data=>{
-          //console.log(data);
-          this.classes = data.data
+          // console.log(data.data);
+          if (data.data >= 0) {
+            this.invalid = ''
+            this.classes = `${data.data} classes conducted`
+          } else{
+            this.invalid = 'background-color: firebrick; border: none; color: white;'
+            this.classes = `No data on future month`
+          }
         })
         .catch(err =>{
           console.log(err);
@@ -120,17 +142,24 @@ export default {
   flex-grow: 1;
   background-color: white;
   margin: 3px;
+  margin-top: 10px;
+  align-content: space-around;
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: space-around;
 }
+.month{
+  min-width: 220px;
+}
 .daynames{
+  min-width: 110px;
   height: 35px;
   font-weight: 600;
   font-size: 17px;
   color: white;
   background-color: cornflowerblue;
+  flex-grow: 0;
 }
 .modal{
   height: 100%;

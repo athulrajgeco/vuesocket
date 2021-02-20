@@ -13,8 +13,8 @@
           <div class="subtopic" v-if="isExpand.a == true">
             <p>Classes Today</p>
             <p @click='monthly()'>Classes this Month</p>
-            <p>Classes by Month  </p>
-            <select class="" name="" v-if="month">
+            <p @click='byMonth = true'>Classes by Month  </p>
+            <select class="" name="" v-if="byMonth">
               <option value="Jan">Jan</option>
               <option value="Feb">Feb</option>
               <option value="March">March</option>
@@ -53,12 +53,14 @@ export default {
       monthName: '',
       calType: '',
       month: false,
-      year: false
+      year: false,
+      byMonth: false
     }
   },
   methods: {
     resetViews(){
       this.month = false,
+      this.byMonth = false,
       this.year = false
     },
     expand(n){

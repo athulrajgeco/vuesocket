@@ -3,19 +3,19 @@
     <div class="outer">
       <h1>{{title.toUpperCase()}}</h1>
       <div class="inner">
-        <div class="square daynames" v-for='d in 7' v-if="type == 'm'">
+        <div class="square daynames" v-for='d in 7' v-if='cols == 7'>
           {{weekdays[d-1]}}
         </div>
         <div class="" v-for='c in cols'>
-          <div class="square" v-if='((r+c-2<start)&&(r==1))||(((r-1)*7)+c-1-start)>=days'
+          <div class="square" v-if='((r+c-2<start)&&(r==1))||(((r-1)*cols)+c-1-start)>=days'
              v-for='r in rows' style="background-color: lightgrey;">
           </div>
           <div class="square month" v-else-if='type == "y"'
-            @click='showdetails(r,c)' style="cursor:pointer;">
+            @click='consolidated(r,c)' style="cursor:pointer;">
             <p style="font-size: 35px">{{months[(r-1)*3+c-1]}}</p>
           </div>
           <div class="square" v-else
-            @click='showdetails(r,c)' style="cursor:pointer;">
+            @click='consolidated(r,c)' style="cursor:pointer;">
             <p>{{date[((r-1)*7)+c-1-start]}}</p>
           </div>
         </div>
@@ -24,6 +24,7 @@
     <div class="modal" v-if="modal" @click='modal = false'>
       <div class="infobox" :style='invalid'>
         <h3>{{classes}}</h3>
+        <button type="button" name="button" @click='details(1,1)' v-if="invalid === ''">Details</button>
       </div>
     </div>
   </div>
@@ -64,35 +65,41 @@ export default {
   watch: {
     type: function(){
       this.update()
+    },
+    title: function(){
+      this.update()
     }
   },
   methods: {
     update(){
+      this.date = []
       for (let i = 1; i <= this.days; i++) {
         this.date.push(i)
       }
       switch (this.type) {
         case 'm':
+        case 'bm':
           this.cols = 7
+          if (this.days + this.start > 35) {
+            this.rows = 6
+          } else if (this.days + this.start > 28){
+            this.rows = 5
+          }
           break;
         case 'y':
           this.cols = 3
           this.rows = 4
           break;
         default:
-          this.cols = 6
+          this.cols = 4
+          this.rows = 6
           break;
       }
-      if (this.days + this.start > 35) {
-        this.rows = 6
-      } else if (this.days + this.start > 28){
-        this.rows = 5
-      }
     },
-    showdetails(r,c){
+    consolidated(r,c){
         this.modal = true
         let address = ''
-        if (this.type=='m') {
+        if (this.type=='m'||this.type=='bm') {
           address = this.$server + `report/monthly?num=${this.title}&date=${((r-1)*7)+c-1-this.start}`
         } else {
           address = this.$server + `report/yearly?num=${this.title}&month=${((r-1)*3)+c-1-this.start}`
@@ -112,6 +119,14 @@ export default {
         .catch(err =>{
           console.log(err);
         })
+    },
+    details(r,c){
+      let curMonth = new Date()
+      this.title = this.months[((r-1)*3)+c-1]
+      this.start = new Date(curMonth.getFullYear(),((r-1)*3)+c-1,1).getDay()
+      //this.days = this.mDays(curMonth.getMonth())
+      this.days = 31
+      this.type = 'm'
     }
   }
 }
@@ -188,6 +203,7 @@ p{
 }
 h1{
   margin: 5px;
+  padding-bottom: 10px;
   font-family: serif;
 }
 </style>

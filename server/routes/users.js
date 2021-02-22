@@ -30,5 +30,18 @@ router.get('/student',(req, res)=>{
   res.send(classList)
 })
 
+router.post('/validate',(req, res)=>{
+  if (req.body.user == 'athulraj') {
+    if (req.body.pass == 'world') {
+      res.json({status:'ok'})
+    } else {
+      res.json({status:'unauth'})
+    }
+  } else{
+    res.json({status:'st'})
+  }
+})
+
+
 
 module.exports = router

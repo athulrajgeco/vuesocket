@@ -37,8 +37,9 @@
         </div>
       </div>
     </div>
-    <div class="modal" v-if="modal" @click='modal = false'>
+    <div class="modal" v-if="modal">
       <div class="loginform">
+        <div class="closebutton" @click='modal = false'>&#x2715;</div>
         <h3>{{user}} login</h3>
         <login-form :type='user'></login-form>
       </div>
@@ -199,12 +200,34 @@ export default {
     border: 4px solid mediumblue;
     border-radius: 15px;
     position: absolute;
-    top:25vh;
+    top:20vh;
     height: 50vh;
-    max-height: 200px;
-    left: 25vw;
-    width: 50vw;
+    max-height: 260px;
+    left: 35vw;
+    width: 30vw;
     min-width: 500px;
-    padding: 20px;
+    padding: 10px;
+  }
+  .loginform >h3{
+    margin-top: 0;
+  }
+  .closebutton{
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: red;
+    border: 4px solid darkred;
+    font-size: 33px;
+    color: white;
+    position: relative;
+    top: -40px;
+    right: -50%;
+    z-index: 4;
+    margin-bottom: 0;
+    cursor: pointer;
+  }
+  .closebutton:hover{
+    background-color: IndianRed;
   }
 </style>

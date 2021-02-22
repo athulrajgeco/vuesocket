@@ -10,29 +10,45 @@
       <input class="griditem2" style="grid-row: 2;" type="password" name="pwd" v-model="password">
     </div>
     <br>
-    <input type="submit" @click.prevent='login' value="Login">
+    <p v-if='unAuth'>Wrong credentials</p>
+    <input type="submit" class='button' @click.prevent='login' value="Login">
   </form>
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   data(){
     return {
       username: '',
-      password: ''
+      password: '',
+      unAuth: false
     }
   },
   methods:{
     login(){
-      //console.log(this.type);
-      if (this.type =='Faculty') {
-        if(confirm("Maximize your browser window for maximum board width"))
-          this.$router.push('/fdb')
-      } else if (this.type =='Student'){
-        this.$router.push('/stwb')
-      } else if (this.type =='admin'){
-        this.$store.commit('changeAuth','admin')
+      let address = this.$server + `user/validate`
+      let credentials = {
+        type: this.type ,
+        user: this.username,
+        pass: this.password
       }
+      axios.post(address, credentials)
+      .then(data =>{
+        console.log(data);
+          if (data.data.status == 'ok') {
+            if(confirm("Maximize your browser window for maximum board width"))
+                this.$router.push('/fdb')
+          } else if (data.data.status == 'st'){
+            this.$router.push('/stwb')
+          } else {
+            this.unAuth = true
+          }
+      })
+      .catch(err =>{
+        console.log(err);
+        return {status: "unauth"}
+      })
     }
   },
   props:{
@@ -54,5 +70,22 @@ export default {
 }
 .griditem2{
   grid-column: 6 /10;
+}
+p{
+  color: crimson;
+  margin: 0;
+  margin-bottom: 10px;
+}
+.button{
+  width: 80px;
+  height: 30px;
+  /* border-radius: 20px; */
+  font-size: 16px;
+  box-shadow: 2px 2px 0 black;
+}
+.button:active{
+  box-shadow: none;
+  transform: translateX(3px);
+  transform: translateY(3px);
 }
 </style>
